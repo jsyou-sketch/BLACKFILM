@@ -252,21 +252,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 </div>
 
 
-<script>
-async function saveToFirebase(data){
-  try{
-    await db.collection("survey").add({
-      ...data,
-      timestamp: new Date().toISOString()
-    });
-    alert("🔥 저장 성공");
-  }catch(e){
-    console.error(e);
-    alert("❌ 저장 실패: " + e.message);
-  }
-}
-</script>
-
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -296,3 +281,23 @@ async function saveToFirebase(data){
   }
 }
 </script>  
+<script>
+let surveyData = {};
+
+let current = 1;
+
+function goNext(){
+  if(current < 4){
+    document.getElementById("s"+current).classList.remove("active");
+    current++;
+    document.getElementById("s"+current).classList.add("active");
+  }else{
+    surveyData.name = document.getElementById("inp-name").value;
+    surveyData.comment = document.getElementById("ta-good").value;
+
+    alert("저장 시도됨"); // 👉 이거 뜨면 연결 OK
+
+    saveToFirebase(surveyData);
+  }
+}
+</script>
