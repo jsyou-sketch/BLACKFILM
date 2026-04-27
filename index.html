@@ -251,23 +251,49 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   </div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
+  authDomain: "blackfilm-survey.firebaseapp.com",
+  projectId: "blackfilm-survey",
+  storageBucket: "blackfilm-survey.firebasestorage.app",
+  messagingSenderId: "360900276842",
+  appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ⭐ Firebase 저장 함수
+window.saveToFirebase = async function(record){
+  try{
+    await addDoc(collection(db, "survey"), {
+      ...record,
+      timestamp: new Date().toISOString()
+    });
+    console.log("Firebase 저장 완료");
+  }catch(e){
+    console.error("Firebase 오류:", e);
+  }
+}
+
+// ===== 기존 로직 =====
 const SKEY='bf_survey_v2';
-// 연동 URL (수정됨)
-const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbwTdlqhDbbLvfzsGu4l756MWYUaX1i11NcDaB-IwtGdJU6_3aB1BCjXZEdUVEGD6nJn/exec";
-const starLabels=['','매우 불만족','불만족','보통','만족','매우 만족'];
 let cur=0,selectedClinicIdx=-1;
 let st={name:'',clinic:'',dateFrom:'',dateTo:'',stars:{},radios:{}};
 
 function loadData(){try{return JSON.parse(localStorage.getItem(SKEY)||'[]');}catch{return[];}}
 function saveData(d){localStorage.setItem(SKEY,JSON.stringify(d));}
 
-function selectClinic(idx,name){
+window.selectClinic=function(idx,name){
   selectedClinicIdx=idx; st.clinic=name;
   document.querySelectorAll('.clinic-card').forEach((c,i)=>c.classList.toggle('selected',i===idx));
 }
 
-function startSurvey(){
+window.startSurvey=function(){
   if(selectedClinicIdx<0){alert('치과를 선택하세요.');return;}
   st.name=document.getElementById('inp-name').value||'익명';
   st.dateFrom=document.getElementById('inp-date-from').value;
@@ -286,22 +312,22 @@ function goTo(n){
   }
 }
 
-function goNext(){if(cur===4){submitSurvey();}else{goTo(cur+1);}}
-function goBack(){goTo(cur-1);}
+window.goNext=function(){if(cur===4){submitSurvey();}else{goTo(cur+1);}}
+window.goBack=function(){goTo(cur-1);}
 
-function ss(k,v){
+window.ss=function(k,v){
   st.stars[k]=v;
   document.getElementById('str-'+k).querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<v));
-  document.getElementById('lbl-'+k).textContent='★'.repeat(v)+' '+starLabels[v];
+  document.getElementById('lbl-'+k).textContent='★'.repeat(v);
 }
 
-function sr(name,el,val){
+window.sr=function(name,el,val){
   st.radios[name]=val;
   el.closest('.rg').querySelectorAll('.ro').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel');
 }
 
-// ⭐ 가장 중요한 수정 포인트: 전송 방식 최적화
+// ⭐ 최종 제출 (Firebase 저장)
 function submitSurvey() {
   const record = {
     name: st.name,
@@ -314,54 +340,42 @@ function submitSurvey() {
     comment: document.getElementById('ta-good').value
   };
 
-  fetch(GOOGLE_URL, {
-    method: 'POST',
-    mode: 'no-cors', // 깃허브 배포 시 필수 설정
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(record)
-  })
-  .then(() => {
-    // 성공 시 로직
-    goTo(5); 
-  })
-  .catch(err => console.error("오류:", err));
-}
+  // Firebase 저장
+  window.saveToFirebase(record);
 
-  // 1. 구글 시트로 데이터 전송 (가장 단순하고 확실한 방식)
-  // 폼 데이터를 만들어 보내는 방식이 구글 보안 통과에 유리합니다.
-  fetch(GOOGLE_URL, {
-    method: 'POST',
-    mode: 'no-cors', // 구글 보안 정책 우회 필수
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(record)
-  })
-  .then(() => {
-    console.log("전송 시도 완료");
-    // 로컬 저장 후 화면 전환
-    const data = loadData();
-    data.push(record);
-    saveData(data);
-    goTo(5);
-  })
-  .catch(err => {
-    alert("전송 중 오류 발생: " + err);
+  // 로컬 저장 (대시보드용)
+  const data = loadData();
+  data.push({
+    ...record,
+    timestamp: new Date().toISOString()
   });
+  saveData(data);
+
+  goTo(5);
 }
 
-function resetSurvey(){ location.reload(); }
-function switchTab(t){
+window.resetSurvey=function(){ location.reload(); }
+
+window.switchTab=function(t){
   document.getElementById('tab-survey-content').style.display=t==='survey'?'block':'none';
   document.getElementById('tab-dash-content').style.display=t==='dash'?'block':'none';
-  if(t==='dash') renderDash('list');
+  if(t==='dash') renderDash();
 }
 
-function renderDash(view){
+function renderDash(){
   const data=loadData();
   const wrap=document.getElementById('dash-main');
-  if(data.length===0){ wrap.innerHTML="<p style='padding:20px;text-align:center;'>기록된 데이터가 없습니다.</p>"; return; }
-  const cards=data.reverse().map(d=>`<div class="resp-card" style="margin-bottom:10px; padding:15px; border:1px solid #ddd; border-radius:10px; background:#fff;">
-    <strong>${d.clinic}</strong> (${d.name})<br><small>${d.timestamp}</small><br>만족도: ${'★'.repeat(d.satisfaction)}
-  </div>`).join('');
+  if(data.length===0){
+    wrap.innerHTML="<p style='padding:20px;text-align:center;'>기록된 데이터가 없습니다.</p>";
+    return;
+  }
+  const cards=data.reverse().map(d=>`
+    <div style="margin-bottom:10px;padding:15px;border:1px solid #ddd;border-radius:10px;background:#fff;">
+      <strong>${d.clinic}</strong> (${d.name})<br>
+      <small>${d.timestamp}</small><br>
+      만족도: ${'★'.repeat(d.satisfaction)}
+    </div>
+  `).join('');
   wrap.innerHTML=cards;
 }
 </script>
