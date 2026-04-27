@@ -369,7 +369,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   // 📊 데이터 불러오기
   // =========================
   async function fetchSurveyData(){
-    const snapshot = await getDocs(collection(db, "survey"));
+    import { getFirestore, collection, addDoc, onSnapshot } from ...
     const list = [];
     snapshot.forEach(doc => list.push(doc.data()));
     return list;
@@ -378,12 +378,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   // =========================
   // 📊 보고서
   // =========================
-  window.renderDash = async function(){
-    const wrap = document.getElementById("dash-main");
-    wrap.innerHTML = "불러오는 중...";
+  window.renderDash = function(){
+  const wrap = document.getElementById("dash-main");
+  wrap.innerHTML = "불러오는 중...";
 
-    const data = await fetchSurveyData();
-
+  listenSurveyData((data)=>{
     if(data.length === 0){
       wrap.innerHTML = "데이터 없음";
       return;
@@ -399,19 +398,5 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         </div>
       `).join('')}
     `;
-  }
-
-  // =========================
-  // 탭 전환
-  // =========================
-  window.switchTab = function(tab){
-    if(tab === "dash"){
-      document.getElementById("tab-survey-content").style.display="none";
-      document.getElementById("tab-dash-content").style.display="block";
-      renderDash();
-    }else{
-      document.getElementById("tab-survey-content").style.display="block";
-      document.getElementById("tab-dash-content").style.display="none";
-    }
-  }
-</script>
+  });
+}
