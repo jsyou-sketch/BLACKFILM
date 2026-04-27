@@ -2,118 +2,69 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BLACKFILM Survey</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    .box {
-      background: #1c1c1c;
-      padding: 20px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 500px;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-    }
-
-    button {
-      background: #ffcc00;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .item {
-      background: #2a2a2a;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 8px;
-    }
-  </style>
+  <title>BLACKFILM 설문</title>
 </head>
+
 <body>
+  <h2>설문 입력</h2>
 
-  <h1>BLACKFILM Survey</h1>
+  <input id="name" placeholder="이름" />
+  <br><br>
 
-  <div class="box">
-    <input id="answer" placeholder="답변 입력" />
-    <button onclick="submitAnswer()">전송</button>
-  </div>
+  <input id="answer" placeholder="답변" />
+  <br><br>
 
-  <div class="box" style="margin-top:20px;">
-    <h3>실시간 응답</h3>
-    <div id="list"></div>
-  </div>
+  <button id="submitBtn">제출</button>
 
+  <p id="status"></p>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    // 🔥 너 Firebase 설정 그대로 사용
+    // 🔥 Firebase 설정 (너 프로젝트 걸로 유지)
     const firebaseConfig = {
       apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg",
-      authDomain: "blackfilm-survey.firebaseapp.com",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
       projectId: "360900276842",
-      storageBucket: "blackfilm-survey.appspot.com",
-      messagingSenderId: "360900276842",
-      appId: "1:360900276842:web:demo"
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
+    // 초기화
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ✅ 저장
-    window.submitAnswer = async function () {
-      const val = document.getElementById("answer").value;
-      if (!val) return alert("내용 입력하세요");
+    const status = document.getElementById("status");
 
-      await addDoc(collection(db, "survey"), {
-        answer: val,
-        time: new Date()
-      });
+    // 버튼 클릭
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const name = document.getElementById("name").value;
+      const answer = document.getElementById("answer").value;
 
-      document.getElementById("answer").value = "";
-    };
+      if (!name || !answer) {
+        status.innerText = "값을 모두 입력하세요";
+        return;
+      }
 
-    // ✅ 실시간 출력
-    const q = query(collection(db, "survey"), orderBy("time", "desc"));
+      try {
+        await addDoc(collection(db, "answers"), {
+          name: name,
+          answer: answer,
+          createdAt: new Date()
+        });
 
-    onSnapshot(q, (snapshot) => {
-      const list = document.getElementById("list");
-      list.innerHTML = "";
+        status.innerText = "저장 완료!";
+        document.getElementById("name").value = "";
+        document.getElementById("answer").value = "";
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const div = document.createElement("div");
-        div.className = "item";
-        div.innerText = data.answer;
-        list.appendChild(div);
-      });
+      } catch (e) {
+        console.error(e);
+        status.innerText = "저장 실패";
+      }
     });
-
   </script>
-
 </body>
 </html>
