@@ -151,7 +151,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   </header>
 
   <div id="tab-survey-content">
-    <!-- S0 -->
     <div class="screen active" id="s0">
       <div class="hero">
         <div class="hero-eyebrow">BLACKFILM · 내부 보고용</div>
@@ -203,7 +202,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       <button class="btn-start" onclick="startSurvey()">설문 시작하기 →</button>
     </div>
 
-    <!-- S1 원장님 태도 -->
     <div class="screen" id="s1">
       <div class="trip-chip" id="chip1"></div>
       <div class="sec-label">원장님 태도 · 소통</div>
@@ -219,7 +217,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       </div>
     </div>
 
-    <!-- S2 출장 환경 -->
     <div class="screen" id="s2">
       <div class="trip-chip" id="chip2"></div>
       <div class="sec-label">출장 환경 · 준비</div>
@@ -240,7 +237,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       </div>
     </div>
 
-    <!-- S3 업무 협업 -->
     <div class="screen" id="s3">
       <div class="trip-chip" id="chip3"></div>
       <div class="sec-label">업무 협업 · 효율</div>
@@ -260,7 +256,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       </div>
     </div>
 
-    <!-- S4 자유 의견 -->
     <div class="screen" id="s4">
       <div class="trip-chip" id="chip4"></div>
       <div class="sec-label">자유 의견 · 전반 평가</div>
@@ -279,7 +274,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       </div>
     </div>
 
-    <!-- S5 완료 -->
     <div class="screen" id="s5">
       <div class="comp-wrap">
         <div class="comp-circle">✓</div>
@@ -303,6 +297,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 <script>
 const SKEY='bf_survey_v2';
+const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbyNaZr3HRj4FDlXm30tYrBEXWycT5vU4f-Azp6X6Lc5xfC2id7Mz6Ceadr9F-9shZcW/exec";
 const starLabels=['','매우 불만족','불만족','보통','만족','매우 만족'];
 let cur=0,selectedClinicIdx=-1,detailId=null;
 let st={name:'',clinic:'',dateFrom:'',dateTo:'',type:'',stars:{},radios:{}};
@@ -376,8 +371,35 @@ function sr(name,el,val){
 
 function submitSurvey(){
   const dateRange=(st.dateFrom&&st.dateTo)?`${st.dateFrom} ~ ${st.dateTo}`:(st.dateFrom||'미입력');
-  const record={id:Date.now(),name:st.name,clinic:st.clinic,dateFrom:st.dateFrom,dateTo:st.dateTo,dateRange,type:st.type,stars:{...st.stars},radios:{...st.radios},good:document.getElementById('ta-good').value,improve:document.getElementById('ta-improve').value,submittedAt:new Date().toISOString()};
-  const data=loadData();data.push(record);saveData(data);
+  const record={
+    id:Date.now(),
+    name:st.name,
+    clinic:st.clinic,
+    dateFrom:st.dateFrom,
+    dateTo:st.dateTo,
+    dateRange,
+    type:st.type,
+    stars:{...st.stars},
+    radios:{...st.radios},
+    good:document.getElementById('ta-good').value,
+    improve:document.getElementById('ta-improve').value,
+    submittedAt:new Date().toISOString()
+  };
+  
+  // 1. 로컬 저장 (브라우저 보고서용)
+  const data=loadData();
+  data.push(record);
+  saveData(data);
+
+  // 2. 구글 시트 전송 (제공해주신 URL)
+  fetch(GOOGLE_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(record)
+  }).catch(e => console.error("전송 오류:", e));
+
+  // 3. UI 업데이트
   function sv(k){const n=st.stars[k]||0;return n?'★'.repeat(n)+'☆'.repeat(5-n):'-';}
   document.getElementById('sum-grid').innerHTML=`
     <div class="scard"><div class="sl">전반 만족도</div><div class="sv">${sv('ov')}</div></div>
