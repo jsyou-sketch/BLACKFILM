@@ -317,12 +317,12 @@ function submitSurvey() {
 
   // 1. 구글 시트로 데이터 전송 (가장 단순하고 확실한 방식)
   // 폼 데이터를 만들어 보내는 방식이 구글 보안 통과에 유리합니다.
-fetch(GOOGLE_URL, {
-  method: 'POST',
-  mode: 'no-cors', // ⭐ 이 줄이 없으면 깃허브 URL에서 보낼 때 차단될 수 있습니다.
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(record)
-})
+  fetch(GOOGLE_URL, {
+    method: 'POST',
+    mode: 'no-cors', // 구글 보안 정책 우회 필수
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(record)
+  })
   .then(() => {
     console.log("전송 시도 완료");
     // 로컬 저장 후 화면 전환
