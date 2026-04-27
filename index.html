@@ -304,7 +304,6 @@ function sr(name,el,val){
 // ⭐ 가장 중요한 수정 포인트: 전송 방식 최적화
 function submitSurvey() {
   const record = {
-    timestamp: new Date().toLocaleString(),
     name: st.name,
     clinic: st.clinic,
     dateRange: `${st.dateFrom} ~ ${st.dateTo}`,
@@ -314,6 +313,19 @@ function submitSurvey() {
     sched: st.radios.sched || '',
     comment: document.getElementById('ta-good').value
   };
+
+  fetch(GOOGLE_URL, {
+    method: 'POST',
+    mode: 'no-cors', // 깃허브 배포 시 필수 설정
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(record)
+  })
+  .then(() => {
+    // 성공 시 로직
+    goTo(5); 
+  })
+  .catch(err => console.error("오류:", err));
+}
 
   // 1. 구글 시트로 데이터 전송 (가장 단순하고 확실한 방식)
   // 폼 데이터를 만들어 보내는 방식이 구글 보안 통과에 유리합니다.
