@@ -401,4 +401,32 @@ alert("저장 시도됨");
   });
 }
 
-  
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
+  authDomain: "blackfilm-survey.firebaseapp.com",
+  projectId: "blackfilm-survey",
+  storageBucket: "blackfilm-survey.firebasestorage.app",
+  messagingSenderId: "360900276842",
+  appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>  
+<script>
+async function saveToFirebase(data){
+  try{
+    await db.collection("survey").add({
+      ...data,
+      timestamp: new Date().toISOString()
+    });
+    alert("🔥 저장 성공");
+  }catch(e){
+    console.error(e);
+    alert("❌ 저장 실패: " + e.message);
+  }
+}
+</script>
