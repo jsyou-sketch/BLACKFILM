@@ -23,14 +23,14 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 🔥 Firebase 설정 (너 프로젝트 걸로 유지)
+// 🔥 Firebase 설정 (스크린샷 기반으로 정확히 수정함)
     const firebaseConfig = {
-      apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg",
-      authDomain: "BLACKFILM-survey.firebaseapp.com",
-      projectId: "BLACKFILM-survey",
-      storageBucket: "BLACKFILM-survey.appspot.com",
+      apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg", // 유지
+      authDomain: "blackfilm-survey.firebaseapp.com",
+      projectId: "blackfilm-survey",
+      storageBucket: "blackfilm-survey.firebasestorage.app", // 👈 수정됨 (스크린샷 확인)
       messagingSenderId: "360900276842",
-      appId: "360900276842"
+      appId: "1:360900276842:web:90f46bcbf8dd42379ad013" // 👈 수정됨 (스크린샷의 앱 ID 전체 입력)
     };
 
     // 초기화
