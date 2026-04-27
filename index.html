@@ -252,16 +252,24 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 </div>
 
 <script type="module">
-  // Firebase import
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-  // 🔥 firebase 초기화
-  const firebaseConfig = { ... };
+  // ✅ Firebase 설정 (이거 정상)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
+    authDomain: "blackfilm-survey.firebaseapp.com",
+    projectId: "blackfilm-survey",
+    storageBucket: "blackfilm-survey.firebasestorage.app",
+    messagingSenderId: "360900276842",
+    appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
+  };
+
+  // ✅ 초기화 (한 번만!)
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // 저장 함수
+  // 저장
   window.saveToFirebase = async function(record){
     try{
       await addDoc(collection(db, "survey"), {
@@ -271,10 +279,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       console.log("Firebase 저장 완료");
     }catch(e){
       console.error("Firebase 오류:", e);
+      alert("저장 실패: " + e.message);
     }
   }
 
-  // 데이터 가져오기
+  // 불러오기
   async function fetchSurveyData(){
     const querySnapshot = await getDocs(collection(db, "survey"));
     const list = [];
@@ -284,7 +293,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     return list;
   }
 
-  // ⭐ 보고서
+  // 보고서
   window.renderDash = async function(){
     const wrap = document.getElementById('dash-main');
     wrap.innerHTML = "불러오는 중...";
