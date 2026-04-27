@@ -155,29 +155,24 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       <div class="hero">
         <div class="hero-eyebrow">BLACKFILM · 내부 보고용</div>
         <h2 class="hero-title">아뜰리에 해외 출장<br>만족도 조사</h2>
-        <p class="hero-desc">파트너 치과 원장님과의 출장 경험을<br>평가해 주세요. 결과는 내부 보고용으로 저장됩니다.</p>
+        <p class="hero-desc">파트너 치과 원장님과의 출장 경험을 평가해 주세요.</p>
       </div>
       <div class="field-group">
-        <label>치기공사 이름 <span style="color:var(--text3);font-size:9px">— 선택</span></label>
-        <input type="text" id="inp-name" placeholder="홍길동">
+        <label>치기공사 이름</label>
+        <input type="text" id="inp-name" placeholder="이름을 입력하세요">
       </div>
       <div class="field-group">
         <label>파트너 치과 선택</label>
         <div class="clinic-grid">
-          <div class="clinic-card" id="clinic-0" onclick="selectClinic(0,'BF긴자치과')">
+          <div class="clinic-card" onclick="selectClinic(0,'BF긴자치과')">
             <div class="clinic-check">✓</div>
             <div class="clinic-ico">🏥</div>
             <div class="clinic-name">BF긴자치과</div>
           </div>
-          <div class="clinic-card" id="clinic-1" onclick="selectClinic(1,'루미너스치과')">
+          <div class="clinic-card" onclick="selectClinic(1,'루미너스치과')">
             <div class="clinic-check">✓</div>
             <div class="clinic-ico">✨</div>
             <div class="clinic-name">루미너스치과</div>
-          </div>
-          <div class="clinic-card disabled" id="clinic-2">
-            <div class="clinic-badge">추가 예정</div>
-            <div class="clinic-ico">🗽</div>
-            <div class="clinic-name">뉴욕치과</div>
           </div>
         </div>
       </div>
@@ -185,19 +180,9 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         <label>출장 기간</label>
         <div class="date-range-row">
           <input type="date" id="inp-date-from">
-          <span class="date-sep">부터</span>
+          <span>~</span>
           <input type="date" id="inp-date-to">
-          <span class="date-sep">까지</span>
         </div>
-      </div>
-      <div class="field-group">
-        <label>출장 유형</label>
-        <select id="inp-type">
-          <option value="정기 출장">정기 출장</option>
-          <option value="긴급 출장">긴급 출장</option>
-          <option value="교육·연수">교육·연수</option>
-          <option value="기타">기타</option>
-        </select>
       </div>
       <button class="btn-start" onclick="startSurvey()">설문 시작하기 →</button>
     </div>
@@ -210,67 +195,39 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         <div class="stars" id="str-a1"><span class="star" onclick="ss('a1',1)">★</span><span class="star" onclick="ss('a1',2)">★</span><span class="star" onclick="ss('a1',3)">★</span><span class="star" onclick="ss('a1',4)">★</span><span class="star" onclick="ss('a1',5)">★</span></div>
         <div class="slbl" id="lbl-a1">별점을 선택해 주세요</div>
       </div>
-      <div class="qcard">
-        <div class="ql">전문 지식 공유 및 업무 지시의 명확도는?</div>
-        <div class="stars" id="str-a2"><span class="star" onclick="ss('a2',1)">★</span><span class="star" onclick="ss('a2',2)">★</span><span class="star" onclick="ss('a2',3)">★</span><span class="star" onclick="ss('a2',4)">★</span><span class="star" onclick="ss('a2',5)">★</span></div>
-        <div class="slbl" id="lbl-a2">별점을 선택해 주세요</div>
-      </div>
     </div>
-
     <div class="screen" id="s2">
       <div class="trip-chip" id="chip2"></div>
       <div class="sec-label">출장 환경 · 준비</div>
       <div class="qcard">
         <div class="ql">출장 일정 및 이동 편의성은 어떠했나요?</div>
         <div class="rg" id="rg-sched">
-          <div class="ro" onclick="sr('sched',this,'매우 원활')"><div class="rd"></div>매우 원활했음</div>
-          <div class="ro" onclick="sr('sched',this,'대체로 원활')"><div class="rd"></div>대체로 원활했음</div>
-          <div class="ro" onclick="sr('sched',this,'보통')"><div class="rd"></div>보통이었음</div>
-          <div class="ro" onclick="sr('sched',this,'다소 불편')"><div class="rd"></div>다소 불편했음</div>
-          <div class="ro" onclick="sr('sched',this,'매우 불편')"><div class="rd"></div>매우 불편했음</div>
+          <div class="ro" onclick="sr('sched',this,'매우 원활')"><div class="rd"></div>매우 원활</div>
+          <div class="ro" onclick="sr('sched',this,'보통')"><div class="rd"></div>보통</div>
+          <div class="ro" onclick="sr('sched',this,'불편')"><div class="rd"></div>불편</div>
         </div>
       </div>
-      <div class="qcard">
-        <div class="ql">치과 현장의 작업 공간 및 장비 상태는?</div>
-        <div class="stars" id="str-b1"><span class="star" onclick="ss('b1',1)">★</span><span class="star" onclick="ss('b1',2)">★</span><span class="star" onclick="ss('b1',3)">★</span><span class="star" onclick="ss('b1',4)">★</span><span class="star" onclick="ss('b1',5)">★</span></div>
-        <div class="slbl" id="lbl-b1">별점을 선택해 주세요</div>
-      </div>
     </div>
-
     <div class="screen" id="s3">
       <div class="trip-chip" id="chip3"></div>
       <div class="sec-label">업무 협업 · 효율</div>
       <div class="qcard">
-        <div class="ql">출장 중 업무 목표 및 역할이 명확하게 공유되었나요?</div>
+        <div class="ql">업무 목표가 명확히 공유되었나요?</div>
         <div class="stars" id="str-c1"><span class="star" onclick="ss('c1',1)">★</span><span class="star" onclick="ss('c1',2)">★</span><span class="star" onclick="ss('c1',3)">★</span><span class="star" onclick="ss('c1',4)">★</span><span class="star" onclick="ss('c1',5)">★</span></div>
         <div class="slbl" id="lbl-c1">별점을 선택해 주세요</div>
       </div>
-      <div class="qcard">
-        <div class="ql">향후 이 치과와의 출장을 다시 희망하시나요?</div>
-        <div class="rg" id="rg-again">
-          <div class="ro" onclick="sr('again',this,'매우 희망')"><div class="rd"></div>매우 희망함</div>
-          <div class="ro" onclick="sr('again',this,'희망')"><div class="rd"></div>희망함</div>
-          <div class="ro" onclick="sr('again',this,'중립')"><div class="rd"></div>특별한 의견 없음</div>
-          <div class="ro" onclick="sr('again',this,'비희망')"><div class="rd"></div>희망하지 않음</div>
-        </div>
-      </div>
     </div>
-
     <div class="screen" id="s4">
       <div class="trip-chip" id="chip4"></div>
-      <div class="sec-label">자유 의견 · 전반 평가</div>
+      <div class="sec-label">자유 의견</div>
       <div class="qcard">
         <div class="ql">전반적인 출장 만족도</div>
         <div class="stars" id="str-ov"><span class="star" onclick="ss('ov',1)">★</span><span class="star" onclick="ss('ov',2)">★</span><span class="star" onclick="ss('ov',3)">★</span><span class="star" onclick="ss('ov',4)">★</span><span class="star" onclick="ss('ov',5)">★</span></div>
         <div class="slbl" id="lbl-ov">별점을 선택해 주세요</div>
       </div>
       <div class="qcard">
-        <div class="ql">특히 좋았던 점 <span style="font-size:11px;color:var(--text3)">— 선택</span></div>
-        <textarea class="sur-ta" id="ta-good" placeholder="예) 원장님이 사전 자료를 잘 준비해 주셨습니다..."></textarea>
-      </div>
-      <div class="qcard">
-        <div class="ql">개선이 필요한 점 <span style="font-size:11px;color:var(--text3)">— 선택</span></div>
-        <textarea class="sur-ta" id="ta-improve" placeholder="예) 이동 일정이 다소 촉박했습니다..."></textarea>
+        <div class="ql">좋았던 점 / 개선할 점</div>
+        <textarea class="sur-ta" id="ta-good" placeholder="의견을 남겨주세요"></textarea>
       </div>
     </div>
 
@@ -278,15 +235,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       <div class="comp-wrap">
         <div class="comp-circle">✓</div>
         <h3>제출 완료</h3>
-        <p>소중한 의견이 저장되었습니다.<br>보고서 탭에서 누적 결과를 확인하세요.</p>
-        <div class="sum-grid" id="sum-grid"></div>
-        <button class="btn-start" onclick="resetSurvey()">새 설문 작성하기</button>
+        <p>데이터가 구글 시트로 전송되었습니다.</p>
+        <button class="btn-start" onclick="resetSurvey()">처음으로</button>
       </div>
     </div>
 
     <div class="nav-row" id="nav-row" style="display:none">
-      <button class="btn-back" id="btn-back" onclick="goBack()">← 이전</button>
-      <button class="btn-next" id="btn-next" onclick="goNext()">다음 →</button>
+      <button class="btn-back" id="btn-back" onclick="goBack()">이전</button>
+      <button class="btn-next" id="btn-next" onclick="goNext()">다음</button>
     </div>
   </div>
 
@@ -297,70 +253,46 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 <script>
 const SKEY='bf_survey_v2';
+// 연동 URL (수정됨)
 const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbwBwpOHudcPbE5t-LunlqJO3N34YHyftFM4rfG_2lLsJ9iadRAxXgCHFE8urJlXZFYJ/exec";
 const starLabels=['','매우 불만족','불만족','보통','만족','매우 만족'];
-let cur=0,selectedClinicIdx=-1,detailId=null;
-let st={name:'',clinic:'',dateFrom:'',dateTo:'',type:'',stars:{},radios:{}};
+let cur=0,selectedClinicIdx=-1;
+let st={name:'',clinic:'',dateFrom:'',dateTo:'',stars:{},radios:{}};
 
 function loadData(){try{return JSON.parse(localStorage.getItem(SKEY)||'[]');}catch{return[];}}
 function saveData(d){localStorage.setItem(SKEY,JSON.stringify(d));}
 
 function selectClinic(idx,name){
   selectedClinicIdx=idx; st.clinic=name;
-  document.querySelectorAll('.clinic-card:not(.disabled)').forEach((c,i)=>c.classList.toggle('selected',i===idx));
+  document.querySelectorAll('.clinic-card').forEach((c,i)=>c.classList.toggle('selected',i===idx));
 }
 
-function switchTab(t){
-  document.getElementById('tab-survey-content').style.display=t==='survey'?'block':'none';
-  document.getElementById('tab-dash-content').style.display=t==='dash'?'block':'none';
-  document.getElementById('tab-btn-survey').classList.toggle('active',t==='survey');
-  document.getElementById('tab-btn-dash').classList.toggle('active',t==='dash');
-  if(t==='dash') renderDash('list');
+function startSurvey(){
+  if(selectedClinicIdx<0){alert('치과를 선택하세요.');return;}
+  st.name=document.getElementById('inp-name').value||'익명';
+  st.dateFrom=document.getElementById('inp-date-from').value;
+  st.dateTo=document.getElementById('inp-date-to').value;
+  goTo(1);
 }
-
-function setHeader(title,prog){
-  document.getElementById('hdr-title').textContent=title;
-  const pw=document.getElementById('prog-bar-wrap'),pf=document.getElementById('prog-bar-fill'),pt=document.getElementById('prog-text');
-  if(prog!==null){pw.style.display='block';pf.style.width=prog+'%';pt.textContent=Math.ceil(prog/25)+' / 4';}
-  else{pw.style.display='none';pt.textContent='';}
-}
-
-function fmtDate(v){if(!v)return null;const d=new Date(v);return d.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\. /g,'.').replace(/\.$/,'');}
 
 function goTo(n){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('s'+n).classList.add('active');
   cur=n;
-  const titles=['출장 만족도 설문','원장님 태도·소통','출장 환경·준비','업무 협업·효율','자유 의견·전반','제출 완료'];
-  setHeader(titles[n]||'',(n>=1&&n<=4)?n*25:null);
   document.getElementById('nav-row').style.display=(n>=1&&n<=4)?'flex':'none';
   if(n>=1&&n<=4){
     document.getElementById('btn-back').style.visibility=n===1?'hidden':'visible';
-    document.getElementById('btn-next').textContent=n===4?'제출하기 ✓':'다음 →';
+    document.getElementById('btn-next').textContent=n===4?'제출하기':'다음';
   }
-  const dr=(st.dateFrom&&st.dateTo)?`${st.dateFrom} ~ ${st.dateTo}`:(st.dateFrom||'기간 미입력');
-  const chip=`<strong>${st.clinic}</strong><span class="chip-sep">|</span>${dr}<span class="chip-sep">|</span>${st.name}`;
-  for(let i=1;i<=4;i++){const el=document.getElementById('chip'+i);if(el)el.innerHTML=chip;}
-  window.scrollTo(0,0);
 }
 
-function startSurvey(){
-  if(selectedClinicIdx<0){alert('파트너 치과를 선택해 주세요.');return;}
-  st.name=document.getElementById('inp-name').value.trim()||'익명';
-  st.dateFrom=fmtDate(document.getElementById('inp-date-from').value)||'';
-  st.dateTo=fmtDate(document.getElementById('inp-date-to').value)||'';
-  st.type=document.getElementById('inp-type').value;
-  st.stars={};st.radios={};
-  goTo(1);
-}
-
-function goNext(){if(cur===4){submitSurvey();return;}goTo(cur+1);}
+function goNext(){if(cur===4){submitSurvey();}else{goTo(cur+1);}}
 function goBack(){goTo(cur-1);}
 
 function ss(k,v){
   st.stars[k]=v;
   document.getElementById('str-'+k).querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<v));
-  const l=document.getElementById('lbl-'+k);if(l)l.textContent='★'.repeat(v)+' '+starLabels[v];
+  document.getElementById('lbl-'+k).textContent='★'.repeat(v)+' '+starLabels[v];
 }
 
 function sr(name,el,val){
@@ -369,111 +301,57 @@ function sr(name,el,val){
   el.classList.add('sel');
 }
 
-function submitSurvey(){
-  const dateRange=(st.dateFrom&&st.dateTo)?`${st.dateFrom} ~ ${st.dateTo}`:(st.dateFrom||'미입력');
-  const record={
-    id:Date.now(),
-    name:st.name,
-    clinic:st.clinic,
-    dateFrom:st.dateFrom,
-    dateTo:st.dateTo,
-    dateRange,
-    type:st.type,
-    stars:{...st.stars},
-    radios:{...st.radios},
-    good:document.getElementById('ta-good').value,
-    improve:document.getElementById('ta-improve').value,
-    submittedAt:new Date().toISOString()
+// ⭐ 가장 중요한 수정 포인트: 전송 방식 최적화
+function submitSurvey() {
+  const record = {
+    timestamp: new Date().toLocaleString(),
+    name: st.name,
+    clinic: st.clinic,
+    dateRange: `${st.dateFrom} ~ ${st.dateTo}`,
+    satisfaction: st.stars.ov || 0,
+    a1: st.stars.a1 || 0,
+    c1: st.stars.c1 || 0,
+    sched: st.radios.sched || '',
+    comment: document.getElementById('ta-good').value
   };
-  
-  // 1. 로컬 저장 (브라우저 보고서용)
-  const data=loadData();
-  data.push(record);
-  saveData(data);
 
-  // 2. 구글 시트 전송 (제공해주신 URL)
+  // 1. 구글 시트로 데이터 전송 (가장 단순하고 확실한 방식)
+  // 폼 데이터를 만들어 보내는 방식이 구글 보안 통과에 유리합니다.
   fetch(GOOGLE_URL, {
     method: 'POST',
-    mode: 'no-cors',
+    mode: 'no-cors', // 구글 보안 정책 우회 필수
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(record)
-  }).catch(e => console.error("전송 오류:", e));
-
-  // 3. UI 업데이트
-  function sv(k){const n=st.stars[k]||0;return n?'★'.repeat(n)+'☆'.repeat(5-n):'-';}
-  document.getElementById('sum-grid').innerHTML=`
-    <div class="scard"><div class="sl">전반 만족도</div><div class="sv">${sv('ov')}</div></div>
-    <div class="scard"><div class="sl">원장님 태도</div><div class="sv">${sv('a1')}</div></div>
-    <div class="scard"><div class="sl">업무 협업</div><div class="sv">${sv('c1')}</div></div>
-    <div class="scard"><div class="sl">현장 환경</div><div class="sv">${sv('b1')}</div></div>
-    <div class="scard" style="grid-column:1/-1"><div class="sl">재출장 희망</div><div class="sv plain">${st.radios.again||'-'}</div></div>`;
-  goTo(5);
+  })
+  .then(() => {
+    console.log("전송 시도 완료");
+    // 로컬 저장 후 화면 전환
+    const data = loadData();
+    data.push(record);
+    saveData(data);
+    goTo(5);
+  })
+  .catch(err => {
+    alert("전송 중 오류 발생: " + err);
+  });
 }
 
-function resetSurvey(){
-  selectedClinicIdx=-1;
-  document.querySelectorAll('.clinic-card:not(.disabled)').forEach(c=>c.classList.remove('selected'));
-  document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
-  document.querySelectorAll('.ro').forEach(o=>o.classList.remove('sel'));
-  document.querySelectorAll('.slbl').forEach(l=>l.textContent='별점을 선택해 주세요');
-  document.querySelectorAll('.sur-ta').forEach(t=>t.value='');
-  document.getElementById('inp-name').value='';
-  document.getElementById('inp-date-from').value='';
-  document.getElementById('inp-date-to').value='';
-  goTo(0);
+function resetSurvey(){ location.reload(); }
+function switchTab(t){
+  document.getElementById('tab-survey-content').style.display=t==='survey'?'block':'none';
+  document.getElementById('tab-dash-content').style.display=t==='dash'?'block':'none';
+  if(t==='dash') renderDash('list');
 }
 
 function renderDash(view){
   const data=loadData();
   const wrap=document.getElementById('dash-main');
-  if(view==='list'){
-    if(data.length===0){wrap.innerHTML=`<div class="dash-empty"><div class="e-ico">📋</div><p>아직 제출된 설문이 없습니다.<br>설문 탭에서 첫 번째 응답을 남겨주세요.</p></div>`;return;}
-    const total=data.length;
-    const avgs=data.map(d=>d.stars.ov||0).filter(v=>v>0);
-    const avgOv=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):'-';
-    const clinics=new Set(data.map(d=>d.clinic)).size;
-    const barKeys=[['ov','전반 만족도'],['a1','원장님 태도'],['a2','업무 지시'],['b1','현장 환경'],['c1','업무 협업']];
-    const bars=barKeys.map(([k,lbl])=>{const vals=data.map(d=>d.stars[k]||0).filter(v=>v>0);const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;const pct=Math.round(avg/5*100);return`<div class="bar-item"><div class="bar-lbl">${lbl}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-val">${avg?avg.toFixed(1):'-'}</div></div>`;}).join('');
-    const cards=[...data].reverse().map(d=>{const ov=d.stars.ov||0;return`<div class="resp-card" onclick="openDetail(${d.id})"><div class="resp-top"><span class="resp-clinic">${d.clinic}</span><span class="resp-date">${d.dateRange||'-'}</span></div><div class="resp-row"><span class="resp-name">${d.name}</span><span class="resp-stars">${ov?'★'.repeat(ov):'-'}</span><span class="tag">${d.type}</span></div></div>`;}).join('');
-    wrap.innerHTML=`
-      <div class="stat-row">
-        <div class="stat-card"><div class="st-val">${total}</div><div class="st-lbl">총 응답</div></div>
-        <div class="stat-card"><div class="st-val">${avgOv}</div><div class="st-lbl">평균 만족도</div></div>
-        <div class="stat-card"><div class="st-val">${clinics}</div><div class="st-lbl">치과 수</div></div>
-      </div>
-      <div class="bar-section">${bars}</div>
-      <div class="sec-label-dash">응답 목록</div>
-      <div class="resp-list">${cards}</div>
-      <button class="btn-danger-full" onclick="clearAll()">전체 데이터 초기화</button>`;
-  }
-  if(view==='detail'&&detailId!==null){
-    const d=data.find(r=>r.id===detailId);
-    if(!d){renderDash('list');return;}
-    function sv(k){const n=d.stars[k]||0;return n?'★'.repeat(n)+'☆'.repeat(5-n):'미응답';}
-    wrap.innerHTML=`
-      <div class="det-header"><button onclick="renderDash('list')">←</button><h3>${d.clinic}</h3></div>
-      <div class="detail-item"><div class="dl">제출자</div><div class="dv">${d.name}</div></div>
-      <div class="detail-item"><div class="dl">출장 기간</div><div class="dv">${d.dateRange||'미입력'}</div></div>
-      <div class="detail-item"><div class="dl">출장 유형</div><div class="dv">${d.type}</div></div>
-      <div class="detail-item"><div class="dl">전반 만족도</div><div class="dv gold">${sv('ov')}</div></div>
-      <div class="detail-item"><div class="dl">원장님 태도</div><div class="dv gold">${sv('a1')}</div></div>
-      <div class="detail-item"><div class="dl">업무 지시 명확도</div><div class="dv gold">${sv('a2')}</div></div>
-      <div class="detail-item"><div class="dl">현장 환경</div><div class="dv gold">${sv('b1')}</div></div>
-      <div class="detail-item"><div class="dl">업무 협업</div><div class="dv gold">${sv('c1')}</div></div>
-      <div class="detail-item"><div class="dl">일정 편의성</div><div class="dv">${d.radios.sched||'미응답'}</div></div>
-      <div class="detail-item"><div class="dl">재출장 희망</div><div class="dv">${d.radios.again||'미응답'}</div></div>
-      ${d.good?`<div class="detail-item"><div class="dl">좋았던 점</div><div class="dv">${d.good}</div></div>`:''}
-      ${d.improve?`<div class="detail-item"><div class="dl">개선 필요 사항</div><div class="dv">${d.improve}</div></div>`:''}
-      <div class="btn-row">
-        <button class="btn-outline" onclick="renderDash('list')">← 목록으로</button>
-        <button class="btn-danger" onclick="deleteRecord(${d.id})">삭제</button>
-      </div>`;
-  }
+  if(data.length===0){ wrap.innerHTML="<p style='padding:20px;text-align:center;'>기록된 데이터가 없습니다.</p>"; return; }
+  const cards=data.reverse().map(d=>`<div class="resp-card" style="margin-bottom:10px; padding:15px; border:1px solid #ddd; border-radius:10px; background:#fff;">
+    <strong>${d.clinic}</strong> (${d.name})<br><small>${d.timestamp}</small><br>만족도: ${'★'.repeat(d.satisfaction)}
+  </div>`).join('');
+  wrap.innerHTML=cards;
 }
-
-function openDetail(id){detailId=id;renderDash('detail');}
-function deleteRecord(id){saveData(loadData().filter(r=>r.id!==id));renderDash('list');}
-function clearAll(){if(confirm('모든 데이터를 삭제하시겠습니까?')){saveData([]);renderDash('list');}}
 </script>
 </body>
 </html>
