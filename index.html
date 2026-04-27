@@ -362,13 +362,57 @@ window.switchTab=function(t){
   if(t==='dash') renderDash();
 }
 
-function renderDash(){
-  const data=loadData();
-  const wrap=document.getElementById('dash-main');
-  if(data.length===0){
-    wrap.innerHTML="<p style='padding:20px;text-align:center;'>기록된 데이터가 없습니다.</p>";
+import { getDocs, collection } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+// Firebase에서 데이터 가져오기
+async function fetchSurveyData(){
+  const querySnapshot = await getDocs(collection(db, "survey"));
+  const list = [];
+  querySnapshot.forEach((doc) => {
+    list.push(doc.data());
+  });
+  return list;
+}
+
+// ⭐ 새로운 보고서 함수
+async function renderDash(){
+  const wrap = document.getElementById('dash-main');
+  wrap.innerHTML = "불러오는 중...";
+
+  const data = await fetchSurveyData();
+
+  if(data.length === 0){
+    wrap.innerHTML = "<p style='padding:20px;text-align:center;'>데이터 없음</p>";
     return;
   }
+
+  // 평균 계산
+  const avg = (arr, key) => {
+    const valid = arr.map(d => d[key]).filter(v => v);
+    if(valid.length === 0) return 0;
+    return (valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(1);
+  }
+
+  const avgSatisfaction = avg(data, "satisfaction");
+
+  // 리스트 출력
+  const listHTML = data.slice().reverse().map(d => `
+    <div style="margin-bottom:10px;padding:12px;border:1px solid #ddd;border-radius:10px;background:#fff;">
+      <strong>${d.clinic}</strong> (${d.name})<br>
+      만족도: ${'★'.repeat(d.satisfaction)}
+    </div>
+  `).join('');
+
+  wrap.innerHTML = `
+    <div style="margin-bottom:15px;">
+      <div style="padding:10px;background:#fff;border:1px solid #ddd;border-radius:10px;text-align:center;">
+        <div style="font-size:20px;">${avgSatisfaction}</div>
+        <div style="font-size:11px;">전체 만족도</div>
+      </div>
+    </div>
+    ${listHTML}
+  `;
+}
   const cards=data.reverse().map(d=>`
     <div style="margin-bottom:10px;padding:15px;border:1px solid #ddd;border-radius:10px;background:#fff;">
       <strong>${d.clinic}</strong> (${d.name})<br>
