@@ -255,7 +255,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-  // ✅ Firebase 설정 (이거 정상)
+  // Firebase 설정
   const firebaseConfig = {
     apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
     authDomain: "blackfilm-survey.firebaseapp.com",
@@ -265,37 +265,121 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
   };
 
-  // ✅ 초기화 (한 번만!)
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // 저장
-  window.saveToFirebase = async function(record){
+  // =========================
+  // 🔥 상태 저장 변수
+  // =========================
+  let surveyData = {
+    name: "",
+    clinic: "",
+    dateFrom: "",
+    dateTo: "",
+    satisfaction: 0,
+    comment: ""
+  };
+
+  // =========================
+  // ⭐ 별점 클릭
+  // =========================
+  window.ss = function(key, val){
+    surveyData.satisfaction = val;
+
+    const stars = document.querySelectorAll(`#str-${key} .star`);
+    stars.forEach((s, i)=>{
+      s.classList.toggle("on", i < val);
+    });
+  }
+
+  // =========================
+  // 🏥 병원 선택
+  // =========================
+  window.selectClinic = function(idx, name){
+    surveyData.clinic = name;
+
+    document.querySelectorAll(".clinic-card").forEach((el,i)=>{
+      el.classList.toggle("selected", i === idx);
+    });
+  }
+
+  // =========================
+  // ▶ 시작 버튼
+  // =========================
+  window.startSurvey = function(){
+    surveyData.name = document.getElementById("inp-name").value;
+    surveyData.dateFrom = document.getElementById("inp-date-from").value;
+    surveyData.dateTo = document.getElementById("inp-date-to").value;
+
+    document.getElementById("s0").classList.remove("active");
+    document.getElementById("s1").classList.add("active");
+    document.getElementById("nav-row").style.display = "flex";
+  }
+
+  // =========================
+  // ▶ 다음
+  // =========================
+  let current = 1;
+
+  window.goNext = async function(){
+    if(current < 4){
+      document.getElementById("s"+current).classList.remove("active");
+      current++;
+      document.getElementById("s"+current).classList.add("active");
+    }else{
+      // 마지막 → 저장
+      surveyData.comment = document.getElementById("ta-good").value;
+
+      await saveToFirebase(surveyData);
+
+      document.getElementById("s4").classList.remove("active");
+      document.getElementById("s5").classList.add("active");
+      document.getElementById("nav-row").style.display = "none";
+    }
+  }
+
+  // =========================
+  // ◀ 이전
+  // =========================
+  window.goBack = function(){
+    if(current > 1){
+      document.getElementById("s"+current).classList.remove("active");
+      current--;
+      document.getElementById("s"+current).classList.add("active");
+    }
+  }
+
+  // =========================
+  // 🔥 Firebase 저장
+  // =========================
+  async function saveToFirebase(data){
     try{
       await addDoc(collection(db, "survey"), {
-        ...record,
+        ...data,
         timestamp: new Date().toISOString()
       });
-      console.log("Firebase 저장 완료");
+      console.log("🔥 저장 완료", data);
     }catch(e){
-      console.error("Firebase 오류:", e);
+      console.error("❌ 저장 실패", e);
       alert("저장 실패: " + e.message);
     }
   }
 
-  // 불러오기
+  // =========================
+  // 📊 데이터 불러오기
+  // =========================
   async function fetchSurveyData(){
-    const querySnapshot = await getDocs(collection(db, "survey"));
+    const snapshot = await getDocs(collection(db, "survey"));
     const list = [];
-    querySnapshot.forEach((doc) => {
-      list.push(doc.data());
-    });
+    snapshot.forEach(doc => list.push(doc.data()));
     return list;
   }
 
-  // 보고서
+  // =========================
+  // 📊 보고서
+  // =========================
   window.renderDash = async function(){
-    const wrap = document.getElementById('dash-main');
+    const wrap = document.getElementById("dash-main");
     wrap.innerHTML = "불러오는 중...";
 
     const data = await fetchSurveyData();
@@ -305,20 +389,29 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       return;
     }
 
-    const avg = (arr, key) => {
-      const valid = arr.map(d => d[key]).filter(v => v);
-      return valid.length ? (valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(1) : 0;
-    }
-
-    const avgSatisfaction = avg(data, "satisfaction");
+    const avg = data.reduce((a,b)=>a + (b.satisfaction||0),0)/data.length;
 
     wrap.innerHTML = `
-      <div>평균 만족도: ${avgSatisfaction}</div>
-      ${data.map(d => `
+      <h3>평균 만족도: ${avg.toFixed(1)}</h3>
+      ${data.map(d=>`
         <div>
-          ${d.clinic} (${d.name}) - ${'★'.repeat(d.satisfaction)}
+          ${d.clinic} / ${d.name} / ${'★'.repeat(d.satisfaction)}
         </div>
       `).join('')}
     `;
+  }
+
+  // =========================
+  // 탭 전환
+  // =========================
+  window.switchTab = function(tab){
+    if(tab === "dash"){
+      document.getElementById("tab-survey-content").style.display="none";
+      document.getElementById("tab-dash-content").style.display="block";
+      renderDash();
+    }else{
+      document.getElementById("tab-survey-content").style.display="block";
+      document.getElementById("tab-dash-content").style.display="none";
+    }
   }
 </script>
