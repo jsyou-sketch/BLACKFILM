@@ -329,7 +329,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     }else{
       // 마지막 → 저장
       surveyData.comment = document.getElementById("ta-good").value;
-
+alert("저장 시도됨");
       await saveToFirebase(surveyData);
 
       document.getElementById("s4").classList.remove("active");
@@ -400,3 +400,5 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     `;
   });
 }
+
+  
