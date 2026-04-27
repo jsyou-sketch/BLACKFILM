@@ -59,9 +59,20 @@ const firebaseConfig = {
         document.getElementById("name").value = "";
         document.getElementById("answer").value = "";
 
-      } catch (e) {
-        console.error(e);
+        console.log("데이터 전송 시도..."); // 확인용
+        await addDoc(collection(db, "answers"), {
+          name: name,
+          answer: answer,
+          createdAt: new Date()
+        });
+        alert("성공했습니다!"); // 성공 시 알림창
+        status.innerText = "저장 완료!";
+        }
+      catch (e) {
+        console.error("상세 에러 내용:", e); // 에러 내용 출력
+        alert("에러 발생: " + e.message); // 에러 메시지 알림창
         status.innerText = "저장 실패";
+
       }
     });
   </script>
