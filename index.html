@@ -1,73 +1,457 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>BLACKFILM 설문</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>BLACKFILM · 출장 만족도</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f5f2;--bg2:#eeece8;--surface:#ffffff;--border:#e2dfd9;--border2:#ccc9c2;--text:#1a1814;--text2:#6b6760;--text3:#a09d98;--accent:#2b5c8a;--accent-light:#e8f0f8;--accent2:#1a3f62;--gold:#a07840;--gold-light:#f5ede0;--danger:#c0392b;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-weight:300;min-height:100vh;}
+.wrap{max-width:430px;margin:0 auto;min-height:100vh;position:relative;}
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 1.25rem .85rem;position:sticky;top:0;z-index:100;box-shadow:0 1px 12px rgba(0,0,0,0.06);}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+.logo-text{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.1rem;letter-spacing:.22em;color:var(--text);text-transform:uppercase;}
+.tab-switch{display:flex;background:var(--bg2);border-radius:6px;padding:2px;gap:2px;}
+.tab-switch button{border:none;background:transparent;color:var(--text2);font-size:11px;font-family:'Noto Sans KR',sans-serif;font-weight:400;letter-spacing:.05em;padding:5px 13px;border-radius:5px;cursor:pointer;transition:all .18s;}
+.tab-switch button.active{background:var(--surface);color:var(--accent);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.header-sub{display:flex;align-items:baseline;justify-content:space-between;}
+.screen-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.15rem;letter-spacing:.02em;color:var(--text);}
+.prog-text{font-size:10px;color:var(--text3);letter-spacing:.08em;}
+.prog-bar-wrap{margin-top:.55rem;height:2px;background:var(--bg2);display:none;border-radius:99px;}
+.prog-bar-fill{height:2px;background:var(--accent);border-radius:99px;transition:width .35s ease;}
+.screen{display:none;padding:1.25rem;}
+.screen.active{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.hero{background:var(--surface);border-radius:12px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;border:1px solid var(--border);text-align:center;}
+.hero-eyebrow{font-size:9px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;margin-bottom:.75rem;font-weight:400;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.85rem;line-height:1.2;color:var(--text);margin-bottom:.6rem;}
+.hero-desc{font-size:12px;color:var(--text2);line-height:1.85;letter-spacing:.01em;}
+.field-group{margin-bottom:.9rem;}
+.field-group label{display:block;font-size:10px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:.4rem;font-weight:400;}
+.field-group input,.field-group select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:300;padding:.55rem .75rem;outline:none;transition:border-color .18s;-webkit-appearance:none;}
+.field-group input:focus,.field-group select:focus{border-color:var(--accent);}
+.field-group input::placeholder{color:var(--text3);}
+.field-group select option{background:white;}
+.clinic-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.4rem;}
+.clinic-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:.9rem .75rem;cursor:pointer;transition:all .18s;text-align:center;position:relative;}
+.clinic-card:hover:not(.disabled){border-color:var(--accent);box-shadow:0 2px 8px rgba(43,92,138,.1);}
+.clinic-card.selected{border-color:var(--accent);background:var(--accent-light);}
+.clinic-card.disabled{opacity:.42;cursor:not-allowed;background:var(--bg2);}
+.clinic-ico{font-size:22px;margin-bottom:6px;}
+.clinic-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.35;}
+.clinic-card.selected .clinic-name{color:var(--accent2);}
+.clinic-badge{position:absolute;top:6px;right:6px;font-size:8px;letter-spacing:.04em;padding:2px 6px;border-radius:99px;background:var(--bg2);color:var(--text3);}
+.clinic-check{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;font-size:9px;color:white;}
+.clinic-card.selected .clinic-check{display:flex;}
+.clinic-card.selected .clinic-badge{display:none;}
+.date-range-row{display:flex;align-items:center;gap:8px;}
+.date-range-row input{flex:1;}
+.date-sep{font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0;}
+.btn-start{width:100%;margin-top:.5rem;padding:13px;background:var(--accent);border:none;border-radius:8px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:400;letter-spacing:.1em;cursor:pointer;transition:background .2s;}
+.btn-start:hover{background:var(--accent2);}
+.trip-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;margin-bottom:1.1rem;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.trip-chip strong{color:var(--accent);font-weight:500;}
+.chip-sep{color:var(--border2);}
+.sec-label{font-size:9px;font-weight:500;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-bottom:.75rem;transition:border-color .15s;}
+.qcard:hover{border-color:var(--border2);}
+.ql{font-size:13px;font-weight:400;color:var(--text);margin-bottom:.85rem;line-height:1.55;}
+.stars{display:flex;gap:6px;}
+.star{font-size:24px;cursor:pointer;color:#ddd;transition:color .12s,transform .1s;user-select:none;line-height:1;}
+.star:hover,.star.on{color:#f0a500;transform:scale(1.1);}
+.slbl{font-size:10px;color:var(--text3);margin-top:.45rem;letter-spacing:.04em;min-height:14px;}
+.rg{display:flex;flex-direction:column;gap:6px;}
+.ro{display:flex;align-items:center;gap:9px;padding:.6rem .8rem;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px;font-weight:300;color:var(--text2);background:var(--bg);transition:all .15s;}
+.ro:hover{border-color:var(--accent);color:var(--text);background:var(--accent-light);}
+.ro.sel{border-color:var(--accent);color:var(--accent2);background:var(--accent-light);font-weight:400;}
+.rd{width:13px;height:13px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0;display:flex;align-items:center;justify-content:center;opacity:.7;}
+.ro.sel .rd{opacity:1;background:var(--accent);border-color:var(--accent);}
+.ro.sel .rd::after{content:'';width:4px;height:4px;border-radius:50%;background:white;}
+.sur-ta{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:300;padding:.6rem .8rem;resize:none;height:78px;outline:none;transition:border-color .18s;}
+.sur-ta:focus{border-color:var(--accent);background:white;}
+.sur-ta::placeholder{color:var(--text3);}
+.nav-row{display:flex;gap:8px;padding:1rem 1.25rem;border-top:1px solid var(--border);position:sticky;bottom:0;background:rgba(247,245,242,0.95);backdrop-filter:blur(8px);}
+.btn-back{flex:1;padding:11px;background:white;border:1px solid var(--border);border-radius:7px;color:var(--text2);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;transition:all .18s;}
+.btn-back:hover{border-color:var(--border2);color:var(--text);}
+.btn-next{flex:2;padding:11px;background:var(--accent);border:none;border-radius:7px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:400;letter-spacing:.08em;cursor:pointer;transition:background .18s;}
+.btn-next:hover{background:var(--accent2);}
+.comp-wrap{text-align:center;padding:2.5rem 1rem 2rem;}
+.comp-circle{width:60px;height:60px;background:var(--accent-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:24px;color:var(--accent);}
+.comp-wrap h3{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.75rem;letter-spacing:.04em;margin-bottom:.5rem;color:var(--text);}
+.comp-wrap p{font-size:12px;color:var(--text2);line-height:1.85;margin-bottom:1.75rem;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem;text-align:left;}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;}
+.scard .sl{font-size:9px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:4px;}
+.scard .sv{font-size:13px;color:#f0a500;}
+.scard .sv.plain{color:var(--text);}
+.dash{padding:1.25rem;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.1rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-align:center;}
+.stat-card .st-val{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:400;color:var(--accent);}
+.stat-card .st-lbl{font-size:9px;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-top:2px;}
+.resp-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;margin-bottom:8px;}
+.resp-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.resp-clinic{font-size:13px;font-weight:500;color:var(--text);}
+.resp-date{font-size:10px;color:var(--text3);}
+.resp-name{font-size:11px;color:var(--text2);}
+.resp-stars{font-size:12px;color:#f0a500;}
+.sec-label-dash{font-size:9px;font-weight:500;letter-spacing:.18em;color:var(--text3);text-transform:uppercase;margin:.9rem 0 .6rem;}
+.loading-msg{text-align:center;padding:2rem;font-size:12px;color:var(--text3);}
+/* 상태 배지 */
+.save-status{font-size:10px;padding:3px 8px;border-radius:99px;margin-left:6px;}
+.save-status.ok{background:#e6f4ea;color:#2e7d32;}
+.save-status.err{background:#fce8e6;color:#c62828;}
+</style>
 </head>
 <body>
-  <h2>설문 입력</h2>
+<div class="wrap">
+  <header class="app-header">
+    <div class="header-top">
+      <span class="logo-text">BLACKFILM</span>
+      <div class="tab-switch">
+        <button id="tab-btn-survey" class="active" onclick="switchTab('survey')">설문</button>
+        <button id="tab-btn-dash" onclick="switchTab('dash')">보고서</button>
+      </div>
+    </div>
+    <div class="header-sub">
+      <span class="screen-title" id="hdr-title">출장 만족도 설문</span>
+      <span class="prog-text" id="prog-text"></span>
+    </div>
+    <div class="prog-bar-wrap" id="prog-bar-wrap">
+      <div class="prog-bar-fill" id="prog-bar-fill" style="width:0%"></div>
+    </div>
+  </header>
 
-  <input id="name" placeholder="이름" />
-  <br><br>
+  <!-- ===== 설문 탭 ===== -->
+  <div id="tab-survey-content">
 
-  <input id="answer" placeholder="답변" />
-  <br><br>
+    <!-- S0: 기본 정보 -->
+    <div class="screen active" id="s0">
+      <div class="hero">
+        <div class="hero-eyebrow">BLACKFILM · 내부 보고용</div>
+        <h2 class="hero-title">아뜰리에 해외 출장<br>만족도 조사</h2>
+        <p class="hero-desc">파트너 치과 원장님과의 출장 경험을 평가해 주세요.</p>
+      </div>
+      <div class="field-group">
+        <label>치기공사 이름</label>
+        <input type="text" id="inp-name" placeholder="이름을 입력하세요">
+      </div>
+      <div class="field-group">
+        <label>파트너 치과 선택</label>
+        <div class="clinic-grid">
+          <div class="clinic-card" onclick="selectClinic(0,'BF긴자치과')">
+            <div class="clinic-check">✓</div>
+            <div class="clinic-ico">🏥</div>
+            <div class="clinic-name">BF긴자치과</div>
+          </div>
+          <div class="clinic-card" onclick="selectClinic(1,'루미너스치과')">
+            <div class="clinic-check">✓</div>
+            <div class="clinic-ico">✨</div>
+            <div class="clinic-name">루미너스치과</div>
+          </div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>출장 기간</label>
+        <div class="date-range-row">
+          <input type="date" id="inp-date-from">
+          <span class="date-sep">~</span>
+          <input type="date" id="inp-date-to">
+        </div>
+      </div>
+      <button class="btn-start" onclick="startSurvey()">설문 시작하기 →</button>
+    </div>
 
-  <button id="submitBtn">제출</button>
+    <!-- S1: 원장님 태도 -->
+    <div class="screen" id="s1">
+      <div class="trip-chip" id="chip1"></div>
+      <div class="sec-label">원장님 태도 · 소통</div>
+      <div class="qcard">
+        <div class="ql">원장님의 전반적인 태도와 배려는 어떠했나요?</div>
+        <div class="stars" id="str-a1">
+          <span class="star" onclick="ss('a1',1)">★</span>
+          <span class="star" onclick="ss('a1',2)">★</span>
+          <span class="star" onclick="ss('a1',3)">★</span>
+          <span class="star" onclick="ss('a1',4)">★</span>
+          <span class="star" onclick="ss('a1',5)">★</span>
+        </div>
+        <div class="slbl" id="lbl-a1">별점을 선택해 주세요</div>
+      </div>
+    </div>
 
-  <p id="status"></p>
+    <!-- S2: 출장 환경 -->
+    <div class="screen" id="s2">
+      <div class="trip-chip" id="chip2"></div>
+      <div class="sec-label">출장 환경 · 준비</div>
+      <div class="qcard">
+        <div class="ql">출장 일정 및 이동 편의성은 어떠했나요?</div>
+        <div class="rg" id="rg-sched">
+          <div class="ro" onclick="sr('sched',this,'매우 원활')"><div class="rd"></div>매우 원활</div>
+          <div class="ro" onclick="sr('sched',this,'보통')"><div class="rd"></div>보통</div>
+          <div class="ro" onclick="sr('sched',this,'불편')"><div class="rd"></div>불편</div>
+        </div>
+      </div>
+    </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <!-- S3: 업무 협업 -->
+    <div class="screen" id="s3">
+      <div class="trip-chip" id="chip3"></div>
+      <div class="sec-label">업무 협업 · 효율</div>
+      <div class="qcard">
+        <div class="ql">업무 목표가 명확히 공유되었나요?</div>
+        <div class="stars" id="str-c1">
+          <span class="star" onclick="ss('c1',1)">★</span>
+          <span class="star" onclick="ss('c1',2)">★</span>
+          <span class="star" onclick="ss('c1',3)">★</span>
+          <span class="star" onclick="ss('c1',4)">★</span>
+          <span class="star" onclick="ss('c1',5)">★</span>
+        </div>
+        <div class="slbl" id="lbl-c1">별점을 선택해 주세요</div>
+      </div>
+    </div>
 
-    // ✅ 오타 및 경로 수정 완료
-    const firebaseConfig = {
-      apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg",
-      authDomain: "blackfilm-survey.firebaseapp.com",
-      projectId: "blackfilm-survey",
-      storageBucket: "blackfilm-survey.firebasestorage.app",
-      messagingSenderId: "360900276842",
-      appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
-    };
+    <!-- S4: 자유 의견 -->
+    <div class="screen" id="s4">
+      <div class="trip-chip" id="chip4"></div>
+      <div class="sec-label">자유 의견</div>
+      <div class="qcard">
+        <div class="ql">전반적인 출장 만족도</div>
+        <div class="stars" id="str-ov">
+          <span class="star" onclick="ss('ov',1)">★</span>
+          <span class="star" onclick="ss('ov',2)">★</span>
+          <span class="star" onclick="ss('ov',3)">★</span>
+          <span class="star" onclick="ss('ov',4)">★</span>
+          <span class="star" onclick="ss('ov',5)">★</span>
+        </div>
+        <div class="slbl" id="lbl-ov">별점을 선택해 주세요</div>
+      </div>
+      <div class="qcard">
+        <div class="ql">좋았던 점 / 개선할 점</div>
+        <textarea class="sur-ta" id="ta-good" placeholder="의견을 남겨주세요"></textarea>
+      </div>
+    </div>
 
-    // 초기화 (대소문자 일치시킴)
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    <!-- S5: 완료 -->
+    <div class="screen" id="s5">
+      <div class="comp-wrap">
+        <div class="comp-circle">✓</div>
+        <h3>제출 완료</h3>
+        <p id="comp-msg">데이터가 Firebase에 저장되었습니다.<br>소중한 의견 감사합니다.</p>
+        <button class="btn-start" onclick="resetSurvey()">처음으로</button>
+      </div>
+    </div>
 
-    const status = document.getElementById("status");
+    <!-- 네비게이션 -->
+    <div class="nav-row" id="nav-row" style="display:none">
+      <button class="btn-back" id="btn-back" onclick="goBack()">이전</button>
+      <button class="btn-next" id="btn-next" onclick="goNext()">다음</button>
+    </div>
+  </div>
 
-    document.getElementById("submitBtn").addEventListener("click", async () => {
-      alert("TEST");
-      const name = document.getElementById("name").value;
-      const answer = document.getElementById("answer").value;
+  <!-- ===== 보고서 탭 ===== -->
+  <div id="tab-dash-content" style="display:none">
+    <div class="dash" id="dash-main">
+      <div class="loading-msg">데이터를 불러오는 중...</div>
+    </div>
+  </div>
+</div>
 
-      if (!name || !answer) {
-        status.innerText = "값을 모두 입력하세요";
-        return;
-      }
+<!-- Firebase SDK (모듈 타입) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-      status.innerText = "전송 중...";
+// ── Firebase 설정 ──────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg",
+  authDomain: "blackfilm-survey.firebaseapp.com",
+  projectId: "blackfilm-survey",
+  storageBucket: "blackfilm-survey.firebasestorage.app",
+  messagingSenderId: "360900276842",
+  appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
+};
 
-      try {
-        // answers 컬렉션에 저장
-        await addDoc(collection(db, "answers"), {
-          name: name,
-          answer: answer,
-          createdAt: serverTimestamp()
-        });
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
 
-        alert("성공적으로 제출되었습니다!");
-        status.innerText = "저장 완료!";
-        document.getElementById("name").value = "";
-        document.getElementById("answer").value = "";
+// ── 상태 ──────────────────────────────────────────────────────
+const starLabels = ['','매우 불만족','불만족','보통','만족','매우 만족'];
+let cur = 0, selectedClinicIdx = -1;
+let st  = { name:'', clinic:'', dateFrom:'', dateTo:'', stars:{}, radios:{} };
 
-      } catch (e) {
-        console.error("에러 상세:", e);
-        alert("에러 발생: " + e.message);
-        status.innerText = "저장 실패: " + e.message;
-      }
-    });
-  </script>
+// ── 치과 선택 ─────────────────────────────────────────────────
+window.selectClinic = (idx, name) => {
+  selectedClinicIdx = idx;
+  st.clinic = name;
+  document.querySelectorAll('.clinic-card').forEach((c,i) =>
+    c.classList.toggle('selected', i === idx));
+};
+
+// ── 설문 시작 ─────────────────────────────────────────────────
+window.startSurvey = () => {
+  if (selectedClinicIdx < 0) { alert('치과를 선택하세요.'); return; }
+  st.name     = document.getElementById('inp-name').value.trim() || '익명';
+  st.dateFrom = document.getElementById('inp-date-from').value;
+  st.dateTo   = document.getElementById('inp-date-to').value;
+  updateChips();
+  goTo(1);
+};
+
+function updateChips() {
+  const txt = `<strong>${st.name}</strong> <span class="chip-sep">|</span>
+    <strong>${st.clinic}</strong> <span class="chip-sep">|</span>
+    ${st.dateFrom} ~ ${st.dateTo}`;
+  [1,2,3,4].forEach(n => {
+    const el = document.getElementById('chip'+n);
+    if (el) el.innerHTML = txt;
+  });
+}
+
+// ── 화면 이동 ─────────────────────────────────────────────────
+window.goTo = (n) => {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  cur = n;
+  const nav = document.getElementById('nav-row');
+  nav.style.display = (n >= 1 && n <= 4) ? 'flex' : 'none';
+  if (n >= 1 && n <= 4) {
+    document.getElementById('btn-back').style.visibility = n === 1 ? 'hidden' : 'visible';
+    document.getElementById('btn-next').textContent = n === 4 ? '제출하기' : '다음';
+  }
+};
+
+window.goNext = () => { if (cur === 4) { submitSurvey(); } else { goTo(cur + 1); } };
+window.goBack = () => { goTo(cur - 1); };
+
+// ── 별점 ──────────────────────────────────────────────────────
+window.ss = (k, v) => {
+  st.stars[k] = v;
+  document.getElementById('str-'+k).querySelectorAll('.star')
+    .forEach((s,i) => s.classList.toggle('on', i < v));
+  document.getElementById('lbl-'+k).textContent = '★'.repeat(v) + ' ' + starLabels[v];
+};
+
+// ── 라디오 ────────────────────────────────────────────────────
+window.sr = (name, el, val) => {
+  st.radios[name] = val;
+  el.closest('.rg').querySelectorAll('.ro').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+};
+
+// ── Firebase 저장 (핵심) ──────────────────────────────────────
+async function submitSurvey() {
+  const btnNext = document.getElementById('btn-next');
+  btnNext.disabled = true;
+  btnNext.textContent = '저장 중...';
+
+  const record = {
+    name:         st.name,
+    clinic:       st.clinic,
+    dateFrom:     st.dateFrom,
+    dateTo:       st.dateTo,
+    satisfaction: st.stars.ov   || 0,   // 전반적 만족도
+    attitude:     st.stars.a1   || 0,   // 원장님 태도
+    goalSharing:  st.stars.c1   || 0,   // 목표 공유
+    schedule:     st.radios.sched || '', // 일정 편의성
+    comment:      document.getElementById('ta-good').value.trim(),
+    createdAt:    serverTimestamp()      // 서버 시각
+  };
+
+  try {
+    // Firestore "surveys" 컬렉션에 저장
+    await addDoc(collection(db, 'surveys'), record);
+    document.getElementById('comp-msg').textContent =
+      '데이터가 Firebase에 저장되었습니다.\n소중한 의견 감사합니다.';
+    goTo(5);
+  } catch (e) {
+    console.error('Firestore 저장 오류:', e);
+    alert('저장 중 오류가 발생했습니다.\n' + e.message);
+    btnNext.disabled = false;
+    btnNext.textContent = '제출하기';
+  }
+}
+
+// ── 초기화 ────────────────────────────────────────────────────
+window.resetSurvey = () => { location.reload(); };
+
+// ── 탭 전환 ───────────────────────────────────────────────────
+window.switchTab = (t) => {
+  document.getElementById('tab-survey-content').style.display = t === 'survey' ? 'block' : 'none';
+  document.getElementById('tab-dash-content').style.display   = t === 'dash'   ? 'block' : 'none';
+  document.getElementById('tab-btn-survey').classList.toggle('active', t === 'survey');
+  document.getElementById('tab-btn-dash').classList.toggle('active',   t === 'dash');
+  if (t === 'dash') renderDash();
+};
+
+// ── 보고서 렌더링 (Firebase에서 읽기) ───────────────────────
+async function renderDash() {
+  const wrap = document.getElementById('dash-main');
+  wrap.innerHTML = '<div class="loading-msg">데이터를 불러오는 중…</div>';
+
+  let docs = [];
+  try {
+    const q   = query(collection(db, 'surveys'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+  } catch (e) {
+    wrap.innerHTML = `<div class="loading-msg" style="color:var(--danger)">데이터 로드 실패: ${e.message}</div>`;
+    return;
+  }
+
+  if (docs.length === 0) {
+    wrap.innerHTML = `<div class="loading-msg"><div style="font-size:36px;opacity:.3;margin-bottom:.75rem">📋</div>기록된 데이터가 없습니다.</div>`;
+    return;
+  }
+
+  // 통계 계산
+  const avg = arr => (arr.reduce((a,b) => a+b, 0) / arr.length).toFixed(1);
+  const satisfactions = docs.map(d => d.satisfaction || 0).filter(v => v > 0);
+  const avgSat = satisfactions.length ? avg(satisfactions) : '-';
+  const avgAtt = avg(docs.map(d => d.attitude    || 0).filter(v => v > 0)) || '-';
+  const avgGoal= avg(docs.map(d => d.goalSharing || 0).filter(v => v > 0)) || '-';
+
+  // 통계 카드
+  const statsHtml = `
+    <div class="sec-label-dash">전체 통계 (총 ${docs.length}건)</div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="st-val">${docs.length}</div><div class="st-lbl">총 응답</div></div>
+      <div class="stat-card"><div class="st-val">${avgSat}</div><div class="st-lbl">평균 만족도</div></div>
+      <div class="stat-card"><div class="st-val">${avgAtt}</div><div class="st-lbl">태도 평균</div></div>
+    </div>`;
+
+  // 응답 목록
+  const listHtml = docs.map(d => {
+    const date = d.createdAt?.toDate
+      ? d.createdAt.toDate().toLocaleDateString('ko-KR')
+      : (d.dateFrom || '날짜 미상');
+    return `
+      <div class="resp-card">
+        <div class="resp-top">
+          <span class="resp-clinic">${d.clinic || ''}</span>
+          <span class="resp-date">${date}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="resp-name">${d.name || ''}</span>
+          <span class="resp-stars">${'★'.repeat(d.satisfaction || 0)}${'☆'.repeat(5-(d.satisfaction||0))}</span>
+          ${d.schedule ? `<span style="font-size:10px;padding:2px 7px;border-radius:99px;background:var(--bg2);color:var(--text3)">${d.schedule}</span>` : ''}
+        </div>
+        ${d.comment ? `<div style="margin-top:6px;font-size:11px;color:var(--text2);border-top:1px solid var(--border);padding-top:6px;">${d.comment}</div>` : ''}
+      </div>`;
+  }).join('');
+
+  wrap.innerHTML = statsHtml + `<div class="sec-label-dash">개별 응답</div>` + listHtml;
+}
+</script>
 </body>
 </html>
