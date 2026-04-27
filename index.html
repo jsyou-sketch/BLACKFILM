@@ -251,171 +251,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   </div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-  // Firebase 설정
-  const firebaseConfig = {
-    apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
-    authDomain: "blackfilm-survey.firebaseapp.com",
-    projectId: "blackfilm-survey",
-    storageBucket: "blackfilm-survey.firebasestorage.app",
-    messagingSenderId: "360900276842",
-    appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // =========================
-  // 🔥 상태 저장 변수
-  // =========================
-  let surveyData = {
-    name: "",
-    clinic: "",
-    dateFrom: "",
-    dateTo: "",
-    satisfaction: 0,
-    comment: ""
-  };
-
-  // =========================
-  // ⭐ 별점 클릭
-  // =========================
-  window.ss = function(key, val){
-    surveyData.satisfaction = val;
-
-    const stars = document.querySelectorAll(`#str-${key} .star`);
-    stars.forEach((s, i)=>{
-      s.classList.toggle("on", i < val);
-    });
-  }
-
-  // =========================
-  // 🏥 병원 선택
-  // =========================
-  window.selectClinic = function(idx, name){
-    surveyData.clinic = name;
-
-    document.querySelectorAll(".clinic-card").forEach((el,i)=>{
-      el.classList.toggle("selected", i === idx);
-    });
-  }
-
-  // =========================
-  // ▶ 시작 버튼
-  // =========================
-  window.startSurvey = function(){
-    surveyData.name = document.getElementById("inp-name").value;
-    surveyData.dateFrom = document.getElementById("inp-date-from").value;
-    surveyData.dateTo = document.getElementById("inp-date-to").value;
-
-    document.getElementById("s0").classList.remove("active");
-    document.getElementById("s1").classList.add("active");
-    document.getElementById("nav-row").style.display = "flex";
-  }
-
-  // =========================
-  // ▶ 다음
-  // =========================
-  let current = 1;
-
-  window.goNext = async function(){
-    if(current < 4){
-      document.getElementById("s"+current).classList.remove("active");
-      current++;
-      document.getElementById("s"+current).classList.add("active");
-    }else{
-      // 마지막 → 저장
-      surveyData.comment = document.getElementById("ta-good").value;
-alert("저장 시도됨");
-      await saveToFirebase(surveyData);
-
-      document.getElementById("s4").classList.remove("active");
-      document.getElementById("s5").classList.add("active");
-      document.getElementById("nav-row").style.display = "none";
-    }
-  }
-
-  // =========================
-  // ◀ 이전
-  // =========================
-  window.goBack = function(){
-    if(current > 1){
-      document.getElementById("s"+current).classList.remove("active");
-      current--;
-      document.getElementById("s"+current).classList.add("active");
-    }
-  }
-
-  // =========================
-  // 🔥 Firebase 저장
-  // =========================
-  async function saveToFirebase(data){
-    try{
-      await addDoc(collection(db, "survey"), {
-        ...data,
-        timestamp: new Date().toISOString()
-      });
-      console.log("🔥 저장 완료", data);
-    }catch(e){
-      console.error("❌ 저장 실패", e);
-      alert("저장 실패: " + e.message);
-    }
-  }
-
-  // =========================
-  // 📊 데이터 불러오기
-  // =========================
-  async function fetchSurveyData(){
-    import { getFirestore, collection, addDoc, onSnapshot } from ...
-    const list = [];
-    snapshot.forEach(doc => list.push(doc.data()));
-    return list;
-  }
-
-  // =========================
-  // 📊 보고서
-  // =========================
-  window.renderDash = function(){
-  const wrap = document.getElementById("dash-main");
-  wrap.innerHTML = "불러오는 중...";
-
-  listenSurveyData((data)=>{
-    if(data.length === 0){
-      wrap.innerHTML = "데이터 없음";
-      return;
-    }
-
-    const avg = data.reduce((a,b)=>a + (b.satisfaction||0),0)/data.length;
-
-    wrap.innerHTML = `
-      <h3>평균 만족도: ${avg.toFixed(1)}</h3>
-      ${data.map(d=>`
-        <div>
-          ${d.clinic} / ${d.name} / ${'★'.repeat(d.satisfaction)}
-        </div>
-      `).join('')}
-    `;
-  });
-}
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
-  authDomain: "blackfilm-survey.firebaseapp.com",
-  projectId: "blackfilm-survey",
-  storageBucket: "blackfilm-survey.firebasestorage.app",
-  messagingSenderId: "360900276842",
-  appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>  
 <script>
 async function saveToFirebase(data){
   try{
@@ -430,3 +266,33 @@ async function saveToFirebase(data){
   }
 }
 </script>
+
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
+  authDomain: "blackfilm-survey.firebaseapp.com",
+  projectId: "blackfilm-survey"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 저장 함수
+async function saveToFirebase(data){
+  try{
+    await db.collection("survey").add({
+      ...data,
+      timestamp: new Date().toISOString()
+    });
+    alert("🔥 저장 성공");
+  }catch(e){
+    console.error(e);
+    alert("❌ 저장 실패: " + e.message);
+  }
+}
+</script>  
