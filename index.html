@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>BLACKFILM 설문</title>
 </head>
-
 <body>
   <h2>설문 입력</h2>
 
@@ -18,16 +17,16 @@
 
   <p id="status"></p>
 
-  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = {
+    // ✅ 스크린샷과 100% 일치하도록 검수된 설정
+    const firebaseConfig = {
       apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg",
       authDomain: "blackfilm-survey.firebaseapp.com",
-      projectId: "blackfilm-survey", // 👈 대문자가 섞여있다면 소문자로 수정
-      storageBucket: "blackfilm-survey.appspot.com", // 👈 이걸로 시도 (혹은 .firebasestorage.app)
+      projectId: "blackfilm-survey",
+      storageBucket: "blackfilm-survey.firebasestorage.app", // 스크린샷 기준 수정
       messagingSenderId: "360900276842",
       appId: "1:360900276842:web:90f46bcbf8dd42379ad013"
     };
@@ -38,41 +37,39 @@ const firebaseConfig = {
 
     const status = document.getElementById("status");
 
-    // 버튼 클릭
+    // 버튼 클릭 이벤트
     document.getElementById("submitBtn").addEventListener("click", async () => {
-      const name = document.getElementById("name").value;
-      const answer = document.getElementById("answer").value;
+      const nameValue = document.getElementById("name").value;
+      const answerValue = document.getElementById("answer").value;
 
-      if (!name || !answer) {
+      if (!nameValue || !answerValue) {
         status.innerText = "값을 모두 입력하세요";
         return;
       }
 
+      status.innerText = "전송 중...";
+
       try {
-        await addDoc(collection(db, "answers"), {
-          name: name,
-          answer: answer,
-          createdAt: new Date()
+        console.log("데이터 전송 시도 중...");
+        
+        // ✅ 중복된 addDoc을 하나로 합치고 가독성 개선
+        const docRef = await addDoc(collection(db, "answers"), {
+          name: nameValue,
+          answer: answerValue,
+          createdAt: serverTimestamp() // 더 정확한 서버 시간 사용
         });
 
+        console.log("성공! 문서 ID:", docRef.id);
+        alert("성공적으로 제출되었습니다!");
+        
         status.innerText = "저장 완료!";
         document.getElementById("name").value = "";
         document.getElementById("answer").value = "";
 
-        console.log("데이터 전송 시도..."); // 확인용
-        await addDoc(collection(db, "answers"), {
-          name: name,
-          answer: answer,
-          createdAt: new Date()
-        });
-        alert("성공했습니다!"); // 성공 시 알림창
-        status.innerText = "저장 완료!";
-        }
-      catch (e) {
-        console.error("상세 에러 내용:", e); // 에러 내용 출력
-        alert("에러 발생: " + e.message); // 에러 메시지 알림창
-        status.innerText = "저장 실패";
-
+      } catch (e) {
+        console.error("상세 에러 내용:", e);
+        alert("에러 발생: " + e.message);
+        status.innerText = "저장 실패: " + e.message;
       }
     });
   </script>
