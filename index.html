@@ -1,52 +1,119 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>설문 테스트</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLACKFILM Survey</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .box {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      background: #ffcc00;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .item {
+      background: #2a2a2a;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
 
-<h2>간단 설문</h2>
+  <h1>BLACKFILM Survey</h1>
 
-이름: <input id="name"><br><br>
-의견: <input id="comment"><br><br>
+  <div class="box">
+    <input id="answer" placeholder="답변 입력" />
+    <button onclick="submitAnswer()">전송</button>
+  </div>
 
-<button onclick="save()">제출하기</button>
+  <div class="box" style="margin-top:20px;">
+    <h3>실시간 응답</h3>
+    <div id="list"></div>
+  </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDXFDLXThLaW6D1ORVNp6Ir6ApMHAkRu5o",
-  authDomain: "blackfilm-survey.firebaseapp.com",
-  projectId: "blackfilm-survey"
-};
+  <!-- Firebase SDK -->
+  <script type="module">
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 👉 버튼 눌렀을 때 실행되는 함수
-function save(){
-  const name = document.getElementById("name").value;
-  const comment = document.getElementById("comment").value;
+    // 🔥 너 Firebase 설정 그대로 사용
+    const firebaseConfig = {
+      apiKey: "AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg",
+      authDomain: "blackfilm-survey.firebaseapp.com",
+      projectId: "360900276842",
+      storageBucket: "blackfilm-survey.appspot.com",
+      messagingSenderId: "360900276842",
+      appId: "1:360900276842:web:demo"
+    };
 
-  alert("버튼 눌림"); // 👉 이거 먼저 확인
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  db.collection("survey").add({
-    name: name,
-    comment: comment,
-    time: new Date()
-  })
-  .then(()=>{
-    alert("🔥 저장 성공");
-  })
-  .catch((e)=>{
-    alert("❌ 실패: " + e.message);
-  });
-}
-</script>
+    // ✅ 저장
+    window.submitAnswer = async function () {
+      const val = document.getElementById("answer").value;
+      if (!val) return alert("내용 입력하세요");
+
+      await addDoc(collection(db, "survey"), {
+        answer: val,
+        time: new Date()
+      });
+
+      document.getElementById("answer").value = "";
+    };
+
+    // ✅ 실시간 출력
+    const q = query(collection(db, "survey"), orderBy("time", "desc"));
+
+    onSnapshot(q, (snapshot) => {
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerText = data.answer;
+        list.appendChild(div);
+      });
+    });
+
+  </script>
 
 </body>
 </html>
