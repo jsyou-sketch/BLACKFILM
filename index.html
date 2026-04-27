@@ -379,5 +379,19 @@ function renderDash(){
   wrap.innerHTML=cards;
 }
 </script>
+
+  import { getDocs, collection } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+// ⭐ Firebase에서 데이터 불러오기
+async function fetchSurveyData(){
+  const querySnapshot = await getDocs(collection(db, "survey"));
+  const list = [];
+
+  querySnapshot.forEach((doc) => {
+    list.push(doc.data());
+  });
+
+  return list;
+}
 </body>
 </html>
